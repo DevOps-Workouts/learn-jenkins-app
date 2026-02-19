@@ -17,6 +17,7 @@ pipeline {
             }
             steps {
                 sh '''
+                    echo "Checking for PollSCM"
                     ls -la
                     node --version
                     npm --version
