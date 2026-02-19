@@ -51,31 +51,31 @@ pipeline {
                     }
                 }
 
-                stage('E2E') {
-                    agent {
-                        docker {
-                            image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
-                            reuseNode true
-                        }
+        stage('E2E') {
+                agent {
+                    docker {
+                        image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                        reuseNode true
                     }
+                }
 
-                    steps {
-                        sh '''
-                            npm install serve
-                            node_modules/.bin/serve -s build &
-                            sleep 10
-                            npx playwright test  --reporter=html
-                        '''
-                    }
+                steps {
+                    sh '''
+                        npm install serve
+                        node_modules/.bin/serve -s build &
+                        sleep 10
+                        npx playwright test  --reporter=html
+                    '''
+                }
 
-                    post {
-                        always {
-                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
-                        }
+                post {
+                    always {
+                        publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright E2E Local Report', reportTitles: '', useWrapperFileDirectly: true])
                     }
                 }
             }
         }
+    }
 
         stage('Deploy') {
             agent {
@@ -94,5 +94,31 @@ pipeline {
                 '''
             }
         }
+
+        stage('PROD E2E') {
+                agent {
+                    docker {
+                        image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                        reuseNode true
+                    }
+                }
+                
+                environment {
+                    CI_ENVIRONMENT_URL      = 'https://lighthearted-squirrel-68f920.netlify.app'
+                }
+
+
+                steps {
+                    sh '''
+                        npx playwright test  --reporter=html
+                    '''
+                }
+
+                post {
+                    always {
+                        publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright E2E PROD Report', reportTitles: '', useWrapperFileDirectly: true])
+                    }
+                }
+            }
     }
 }
