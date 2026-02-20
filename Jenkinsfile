@@ -8,6 +8,24 @@ pipeline {
     }
 
     stages {
+
+        stage('AWS') {
+            agent {
+                docker {
+                    image 'amazon/aws-cli:2.33.26'
+                    args "--entrypoint ''"
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    aws --version
+                    aws s3 ls
+                '''
+            }
+        }
+
+
         stage('Build') {
             agent {
                 docker {
