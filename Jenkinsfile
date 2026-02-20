@@ -14,14 +14,13 @@ pipeline {
                 docker {
                     image 'amazon/aws-cli:2.33.26'
                     args "--entrypoint ''"
-                    reuseNode true
+                    
                 }
             }
             steps {
                 sh '''
-                    aws --version
-                    aws s3 ls
-                '''
+                    aws --version 
+                    '''                
             }
         }
 
