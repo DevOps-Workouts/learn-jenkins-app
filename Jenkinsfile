@@ -23,6 +23,9 @@ pipeline {
                     sh '''
                         aws --version 
                         aws s3 ls
+                        echo "Hello from S3" > index.html
+                        aws s3 cp index.html s3://aws-3tier-architecture-workouts-demo01/index.html
+                        aws s3 ls s3://aws-3tier-architecture-workouts-demo01/ 
                     ''' 
                  }
                                
