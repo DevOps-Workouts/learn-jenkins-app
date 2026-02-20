@@ -9,33 +9,6 @@ pipeline {
 
     stages {
 
-        stage('AWS') {
-            agent {
-                docker {
-                    image 'amazon/aws-cli:2.33.26'
-                    args "--entrypoint ''"
-                    
-                }
-            }
-            environment {
-                AWS_S3_BUCKET = 'aws-3tier-architecture-workouts-demo01'
-            }
-            steps {
-
-                withCredentials([usernamePassword(credentialsId: 'AWSCLI', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
-                    sh '''
-                        aws --version 
-                        aws s3 ls
-                        echo "Hello from S3" > index.html
-                        aws s3 cp index.html s3://$AWS_S3_BUCKET/index.html
-                        aws s3 ls s3://$AWS_S3_BUCKET/ 
-                    ''' 
-                 }
-                               
-            }
-        }
-
-
         stage('Build') {
             agent {
                 docker {
@@ -52,6 +25,36 @@ pipeline {
                     npm run build
                     ls -la
                 '''
+            }
+        }
+
+        
+        stage('AWS') {
+            agent {
+                docker {
+                    image 'amazon/aws-cli:2.33.26'
+                    resueNode true
+                    args "--entrypoint ''"
+                    
+                }
+            }
+            environment {
+                AWS_S3_BUCKET = 'aws-3tier-architecture-workouts-demo01'
+            }
+            steps {
+
+                withCredentials([usernamePassword(credentialsId: 'AWSCLI', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                    sh '''
+                        aws --version 
+                        aws s3 ls
+                       /* echo "Hello from S3" > index.html
+                        aws s3 cp index.html s3://$AWS_S3_BUCKET/index.html
+                        aws s3 ls s3://$AWS_S3_BUCKET/ */
+
+                        aws s3 sync build s3://$AWS_S3_BUCKET  
+                    ''' 
+                 }
+                               
             }
         }
 
