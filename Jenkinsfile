@@ -17,6 +17,9 @@ pipeline {
                     
                 }
             }
+            environment {
+                AWS_S3_BUCKET = 'aws-3tier-architecture-workouts-demo01'
+            }
             steps {
 
                 withCredentials([usernamePassword(credentialsId: 'AWSCLI', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
@@ -24,8 +27,8 @@ pipeline {
                         aws --version 
                         aws s3 ls
                         echo "Hello from S3" > index.html
-                        aws s3 cp index.html s3://aws-3tier-architecture-workouts-demo01/index.html
-                        aws s3 ls s3://aws-3tier-architecture-workouts-demo01/ 
+                        aws s3 cp index.html s3://$AWS_S3_BUCKET/index.html
+                        aws s3 ls s3://$AWS_S3_BUCKET/ 
                     ''' 
                  }
                                
