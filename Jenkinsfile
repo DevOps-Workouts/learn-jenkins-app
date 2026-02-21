@@ -27,14 +27,14 @@ pipeline {
                 '''
             }
         }
-    }
+    
         
         stage('AWS') {
             agent {
                 docker {
-                    image 'amazon/aws-cli:2.33.26'
+                    image 'amazon/aws-cli'
                     resueNode true
-                    args "--entrypoint ''"
+                    args "--entrypoint=''"
                     
                 }
             }
@@ -47,9 +47,9 @@ pipeline {
                     sh '''
                         aws --version 
                         aws s3 ls
-                       /* echo "Hello from S3" > index.html
-                        aws s3 cp index.html s3://$AWS_S3_BUCKET/index.html
-                        aws s3 ls s3://$AWS_S3_BUCKET/ */
+                        #echo "Hello from S3" > index.html
+                        #aws s3 cp index.html s3://$AWS_S3_BUCKET/index.html
+                        #aws s3 ls s3://$AWS_S3_BUCKET/ 
 
                         aws s3 sync build s3://$AWS_S3_BUCKET  
                     ''' 
