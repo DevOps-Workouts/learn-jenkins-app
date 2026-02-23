@@ -25,7 +25,6 @@ pipeline {
                         aws --version 
                         aws s3 ls
                         aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json
-                    ''' 
                  }
                                
             }
